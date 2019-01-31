@@ -9,11 +9,11 @@ Dev tools and widgets for Flutter applications.
 In your pubspec.yaml:
 ```yaml
 dependencies:
-  gestures: ^0.0.1
+  dev: ^0.0.2
 ```
 
 ```dart
-import 'package:gestures/gestures.dart';
+import 'package:dev/dev.dart';
 ```
 
 Basic construction of the widget:
