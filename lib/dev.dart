@@ -7,13 +7,29 @@ export 'package:gestures/gestures.dart';
 
 const bool _isReleaseMode = const bool.fromEnvironment("dart.vm.product");
 
+/// A developer menu that can contain functionality to help test the app.
 class DevMenu extends StatefulWidget {
+  /// The gesture required to open the app.
   final List<Gesture>? gestures;
+
+  /// The body of the app.
   final Widget body;
+
+  /// The developer menu widget.
   final Widget devMenu;
+
+  /// Whether this menu should be present on release.
   final bool hideInRelease;
+
+  /// A callback on menu open.
   final VoidCallback? onOpen;
+
+  /// A callback on menu close.
   final VoidCallback? onClose;
+
+  /// The hit behaviour for this widget.
+  ///
+  /// Defaults to [HitTestBehavior.opaque].
   final HitTestBehavior? behavior;
 
   const DevMenu({
@@ -65,8 +81,10 @@ class DevMenuState extends State<DevMenu> {
     if (oldWidget.gestures != widget.gestures) _updateGestures();
   }
 
+  /// Whether the menu is open.
   bool get isOpen => _showMenu;
 
+  /// Opens the dev menu.
   void open() {
     setState(() {
       bool isOpen = _showMenu;
@@ -75,6 +93,7 @@ class DevMenuState extends State<DevMenu> {
     });
   }
 
+  /// Closes the dev menu.
   void close() {
     setState(() {
       bool isOpen = _showMenu;
@@ -118,12 +137,13 @@ class DevMenuState extends State<DevMenu> {
   }
 }
 
+/// Build a dev menu that will not be included in release
 Widget buildDevMenu({
   Key? key,
   required Widget body,
   required Widget Function() devMenu,
-  bool hideInRelease = true,
   List<Gesture>? gestures,
+  HitTestBehavior? behavior,
 }) {
   return _isReleaseMode
       ? body
@@ -132,5 +152,6 @@ Widget buildDevMenu({
           body: body,
           devMenu: devMenu(),
           gestures: gestures,
+          behavior: behavior,
         );
 }
