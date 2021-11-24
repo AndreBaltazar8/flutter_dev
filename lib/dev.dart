@@ -9,7 +9,9 @@ const bool _isReleaseMode = const bool.fromEnvironment("dart.vm.product");
 
 /// A developer menu that can contain functionality to help test the app.
 class DevMenu extends StatefulWidget {
-  /// The gesture required to open the app.
+  /// The gesture to open the app.
+  ///
+  /// If no gesture is provider it defaults to [down, right, up] a gesture.
   final List<Gesture>? gestures;
 
   /// The body of the app.
