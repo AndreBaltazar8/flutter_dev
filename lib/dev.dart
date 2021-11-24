@@ -8,26 +8,25 @@ export 'package:gestures/gestures.dart';
 const bool _isReleaseMode = const bool.fromEnvironment("dart.vm.product");
 
 class DevMenu extends StatefulWidget {
-  final List<Gesture> gestures;
+  final List<Gesture>? gestures;
   final Widget body;
   final Widget devMenu;
   final bool hideInRelease;
-  final VoidCallback onOpen;
-  final VoidCallback onClose;
+  final VoidCallback? onOpen;
+  final VoidCallback? onClose;
+  final HitTestBehavior? behavior;
 
   const DevMenu({
-    Key key,
-    @required Widget body,
-    @required Widget devMenu,
+    Key? key,
+    required Widget body,
+    required Widget devMenu,
     this.gestures,
     this.onOpen,
     this.onClose,
+    this.behavior,
     bool hideInRelease = true,
-  })  : assert(body != null),
-        this.body = body,
-        assert(devMenu != null),
+  })  : this.body = body,
         this.devMenu = devMenu,
-        assert(hideInRelease != null),
         this.hideInRelease = hideInRelease,
         super(key: key);
 
@@ -37,7 +36,7 @@ class DevMenu extends StatefulWidget {
 
 class DevMenuState extends State<DevMenu> {
   bool _showMenu = false;
-  List<Gesture> _gestures;
+  List<Gesture> _gestures = [];
 
   @override
   void initState() {
@@ -47,8 +46,9 @@ class DevMenuState extends State<DevMenu> {
   }
 
   void _updateGestures() {
-    if (widget.gestures != null && widget.gestures.length > 0) {
-      _gestures = widget.gestures.map((gesture) => gesture).toList();
+    final gestures = widget.gestures;
+    if (gestures != null && gestures.length > 0) {
+      _gestures = gestures.toList();
     } else {
       _gestures = <Gesture>[
         GestureLine(AxisDirection.down),
@@ -71,7 +71,7 @@ class DevMenuState extends State<DevMenu> {
     setState(() {
       bool isOpen = _showMenu;
       _showMenu = true;
-      if (!isOpen && widget.onOpen != null) widget.onOpen();
+      if (!isOpen) widget.onOpen?.call();
     });
   }
 
@@ -79,7 +79,7 @@ class DevMenuState extends State<DevMenu> {
     setState(() {
       bool isOpen = _showMenu;
       _showMenu = false;
-      if (isOpen && widget.onClose != null) widget.onClose();
+      if (isOpen) widget.onClose?.call();
     });
   }
 
@@ -88,15 +88,13 @@ class DevMenuState extends State<DevMenu> {
     return widget.hideInRelease && _isReleaseMode
         ? widget.body
         : CustomGestureDetector(
+            behavior: widget.behavior ?? HitTestBehavior.opaque,
             gestures: _gestures,
             onGestureEnd: (success) {
               if (success) {
                 setState(() {
                   _showMenu = !_showMenu;
-                  if (_showMenu && widget.onOpen != null)
-                    widget.onOpen();
-                  else if (!_showMenu && widget.onClose != null)
-                    widget.onClose();
+                  (_showMenu ? widget.onOpen : widget.onClose)?.call();
                 });
               }
             },
@@ -121,11 +119,11 @@ class DevMenuState extends State<DevMenu> {
 }
 
 Widget buildDevMenu({
-  Key key,
-  @required Widget body,
-  @required Widget Function() devMenu,
+  Key? key,
+  required Widget body,
+  required Widget Function() devMenu,
   bool hideInRelease = true,
-  List<Gesture> gestures,
+  List<Gesture>? gestures,
 }) {
   return _isReleaseMode
       ? body

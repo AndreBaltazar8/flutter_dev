@@ -1,11 +1,9 @@
+import 'package:dev/dev.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dev/dev.dart';
-
 void main() {
-  // TODO: fix this test
   testWidgets('open menu', (WidgetTester tester) async {
     var containerKey = UniqueKey();
     var opened = false;
@@ -36,8 +34,11 @@ void main() {
     );
 
     expect(opened, equals(false));
-    final RenderBox box = find.byKey(containerKey).evaluate().first.renderObject;
-    await tester.startGesture(box.localToGlobal(Offset.zero + Offset(5, 5))).then((gesture) async {
+    final RenderBox box =
+        find.byKey(containerKey).evaluate().first.renderObject! as RenderBox;
+    await tester
+        .startGesture(box.localToGlobal(Offset.zero + Offset(5, 5)))
+        .then((gesture) async {
       await gesture.moveBy(Offset(0, 40));
       await gesture.moveBy(Offset(0, 55));
       await gesture.moveBy(Offset(0, 55));
